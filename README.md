@@ -9,30 +9,7 @@ La UI es deliberadamente simple — es un backoffice de 3 cuentas, no un product
 
 ## Arquitectura
 
-```
-Frontend (Next.js, Vercel)
-   │  JWT de Cognito
-   ▼
-API Gateway (HTTP API, JWT authorizer nativo)
-   │
-   ├─ POST /transferencias ──▶ Core API (Lambda) ──▶ DynamoDB (débito atómico + DEBITADO)
-   │                                │
-   │                                ▼
-   │                          SNS → SQS → Worker (Lambda)
-   │                                         │
-   │                                         ▼
-   │                                   Mock COELSA (Lambda, 1.5s, ~15% de fallas a propósito)
-   │                                         │
-   │                              ┌──────────┴──────────┐
-   │                              ▼                     ▼
-   │                        LIQUIDADO              REVERTIDO
-   │                        (crédito atómico)      (crédito devuelto)
-   │                              │
-   │                              ▼
-   │                    DynamoDB Streams → PDF Lambda → S3 (privado, presigned URL)
-   │
-   └─ GET /accounts, /ledger, /transfers/{id}/receipt ──▶ Core API read (Lambda)
-```
+![Arquitectura del sistema: Frontend autenticado con Cognito llama a API Gateway, que invoca Core API; Core API debita atómicamente en DynamoDB y publica a SNS, que entra a SQS y dispara al Worker; el Worker invoca Mock COELSA y según el resultado el ledger queda LIQUIDADO o REVERTIDO; si liquida, DynamoDB Streams dispara la Lambda de PDF que sube el comprobante a S3.](docs/architecture.svg)
 
 Cada salto es real — nada de esto está simulado en el frontend; la página de arquitectura dispara una transferencia real de $0,01 y refleja eventos reales observados por polling contra `/ledger` y `/transfers/{id}/receipt`.
 
@@ -97,8 +74,4 @@ Terminados los dos, cada resultado se volvió a verificar a mano contra AWS real
 
 ## Documentación de decisiones
 
-Cada decisión de arquitectura no obvia está en `DECISIONS.md`, formato ADR (Architecture Decision Record): contexto, decisión, costo verificado, alternativas consideradas, consecuencias, y un cierre corto de cómo defenderla en una entrevista técnica. `TICKETS.md` tiene el backlog día por día tal como se ejecutó. `GLOSSARY.md` y `STUDY.md` son notas de estudio del curso base de AWS que precedió a este proyecto.
-
-## Cómo defenderlo en la entrevista
-
-"Este proyecto no es una demo de 'sé usar Lambda' — es un ejercicio deliberado de arquitectura orientada a eventos con una restricción de costo real y verificada en cada paso, no asumida. Elegí desacoplar la creación de una transferencia de su liquidación (SNS+SQS+Worker) porque una transferencia interbancaria real no es instantánea; el ledger es append-only porque un sistema financiero nunca debería poder perder o pisar su propio historial; y cada decisión de servicio — desde por qué HTTP API y no REST API, hasta por qué DynamoDB provisioned fijo y no on-demand — está documentada con su costo real verificado antes de tomarla, no después. Lo que falta para producción real (separación de cuentas por ambiente, CI/CD con OIDC, aislamiento de VPC) también está documentado explícitamente — no es un punto ciego, es una decisión consciente de alcance para un MVP de portfolio."
+Cada decisión de arquitectura no obvia está en `DECISIONS.md`, formato ADR (Architecture Decision Record): contexto, decisión, costo verificado, alternativas consideradas y consecuencias. `TICKETS.md` tiene el backlog día por día tal como se ejecutó. `GLOSSARY.md` y `STUDY.md` son notas de estudio del curso base de AWS que precedió a este proyecto.

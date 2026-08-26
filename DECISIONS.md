@@ -19,7 +19,7 @@ Registro tipo ADR (Architecture Decision Record) de las decisiones tomadas duran
 - El repo de Infra necesita artefactos de build de los demás repos — SAM asume por defecto código local al template, así que esto exige una estrategia explícita (pendiente de definir en Día 5).
 - Overhead operativo real de mantener múltiples pipelines de CI/CD en solitario.
 
-**Cómo defenderlo en la entrevista:** "Elegí polyrepo aplicando bounded contexts de DDD para trazar los límites de servicio, no arbitrariamente. Soy consciente del costo operacional que eso implica siendo un solo desarrollador — versionado cruzado de contratos, coordinación de builds para IaC — y lo asumí como parte del ejercicio de simular independencia de despliegue real."
+**Argumento central:** "Elegí polyrepo aplicando bounded contexts de DDD para trazar los límites de servicio, no arbitrariamente. Soy consciente del costo operacional que eso implica siendo un solo desarrollador — versionado cruzado de contratos, coordinación de builds para IaC — y lo asumí como parte del ejercicio de simular independencia de despliegue real."
 
 ---
 
@@ -37,7 +37,7 @@ Registro tipo ADR (Architecture Decision Record) de las decisiones tomadas duran
 - Lambda always-free: 1.000.000 requests + 400.000 GB-segundos de cómputo, por mes, para siempre (no es free-tier de 12 meses). A escala de tráfico de demo, prácticamente $0 garantizado.
 - Mock COELSA, al ser un proceso ya pensado como asíncrono (invocado por el Worker), encaja naturalmente como Lambda sin cambios de diseño.
 
-**Cómo defenderlo en la entrevista:** "Descarté EC2 no solo por costo sino porque un servidor long-running es más trabajo operativo (levantarlo, mantenerlo corriendo, pagarlo aunque nadie lo use) que una función invocada on-demand. Lambda no fue un compromiso entre costo y simplicidad — optimiza las dos cosas a la vez."
+**Argumento central:** "Descarté EC2 no solo por costo sino porque un servidor long-running es más trabajo operativo (levantarlo, mantenerlo corriendo, pagarlo aunque nadie lo use) que una función invocada on-demand. Lambda no fue un compromiso entre costo y simplicidad — optimiza las dos cosas a la vez."
 
 ---
 
@@ -55,7 +55,7 @@ Registro tipo ADR (Architecture Decision Record) de las decisiones tomadas duran
 - Cold start más rápido: sin reflection ni escaneo de grafo de módulos.
 - Sin dependencia de un framework pesado — más control, pero también más código propio de "plomería" (routing básico, parsing del evento).
 
-**Cómo defenderlo en la entrevista:** "Clean Architecture y 'usar un contenedor de DI' son ejes independientes — la arquitectura define la dirección de las dependencias, no cómo se instancian. Elegí DI manual porque el costo de bootstrap de un contenedor reflectivo (el de Nest) es medible y evitable, y en Lambda se traduce directo en costo y latencia percibida. No es que no sepa usar NestJS — es que entendí su modelo de ejecución en un contexto serverless y tomé una decisión deliberada en base a eso."
+**Argumento central:** "Clean Architecture y 'usar un contenedor de DI' son ejes independientes — la arquitectura define la dirección de las dependencias, no cómo se instancian. Elegí DI manual porque el costo de bootstrap de un contenedor reflectivo (el de Nest) es medible y evitable, y en Lambda se traduce directo en costo y latencia percibida. No es que no sepa usar NestJS — es que entendí su modelo de ejecución en un contexto serverless y tomé una decisión deliberada en base a eso."
 
 ---
 
@@ -76,7 +76,7 @@ Registro tipo ADR (Architecture Decision Record) de las decisiones tomadas duran
 - Un repo más que mantener, pero sin infraestructura de CI de publish — el "release" es simplemente taggear.
 - Si en el futuro el repo pasara a privado, hace falta un PAT de GitHub con scope mínimo guardado como secret de CI (nunca embebido en la URL), siguiendo el mismo principio de "nunca hardcodear credenciales" que ya rige para AWS.
 
-**Cómo defenderlo en la entrevista:** "Elegí compartir contratos vía un repo de solo-tipos versionado con git tags en vez de duplicar código o montar un registry privado — es el punto de menor complejidad operativa que aún da single-source-of-truth con versionado explícito. Fijé a tags/commit SHA, no a una rama, para que la resolución de dependencias sea reproducible."
+**Argumento central:** "Elegí compartir contratos vía un repo de solo-tipos versionado con git tags en vez de duplicar código o montar un registry privado — es el punto de menor complejidad operativa que aún da single-source-of-truth con versionado explícito. Fijé a tags/commit SHA, no a una rama, para que la resolución de dependencias sea reproducible."
 
 ---
 
@@ -95,7 +95,7 @@ Registro tipo ADR (Architecture Decision Record) de las decisiones tomadas duran
 - Menos superficie propia expuesta a tráfico no autenticado; fail-fast en el borde.
 - Nota aparte, no resuelta acá: la validación del JWT es autenticación (quién manda el request), no protege contra injection en el contenido del body — eso se resuelve por separado con validación de los DTOs de entrada en cada endpoint.
 
-**Cómo defenderlo en la entrevista:** "Elegí pagar un costo marginal (~$1/millón de requests) a cambio de que la validación de identidad ocurra en un componente maduro de AWS antes de que mi código corra, en vez de reimplementar verificación de JWT a mano dentro de la Lambda. Es una decisión consciente de dónde ubicar la frontera de confianza en el ciclo de vida del request."
+**Argumento central:** "Elegí pagar un costo marginal (~$1/millón de requests) a cambio de que la validación de identidad ocurra en un componente maduro de AWS antes de que mi código corra, en vez de reimplementar verificación de JWT a mano dentro de la Lambda. Es una decisión consciente de dónde ubicar la frontera de confianza en el ciclo de vida del request."
 
 ---
 
@@ -121,7 +121,7 @@ Idempotencia obligatoria (clave = `transferId`) en cada paso, porque SQS es at-l
 - El balance vive como campo mutable en Accounts, pero **toda mutación pasa exclusivamente por escritura atómica condicionada** — nunca por lock de aplicación.
 - El ledger se mantiene 100% append-only incluso para reversiones (nuevo INSERT, nunca edición).
 
-**Cómo defenderlo en la entrevista:** "No podía usar una transacción ACID única entre mi banco y una cámara compensadora externa, así que apliqué Saga con transacciones compensatorias: reservo el balance de forma atómica y síncrona antes de tocar nada externo, y si la cámara compensadora falla, la reversión es un nuevo hecho en el ledger, no una edición del original."
+**Argumento central:** "No podía usar una transacción ACID única entre mi banco y una cámara compensadora externa, así que apliqué Saga con transacciones compensatorias: reservo el balance de forma atómica y síncrona antes de tocar nada externo, y si la cámara compensadora falla, la reversión es un nuevo hecho en el ledger, no una edición del original."
 
 ---
 
@@ -145,7 +145,7 @@ Idempotencia obligatoria (clave = `transferId`) en cada paso, porque SQS es at-l
 - Requiere disciplina de capacidad (25/25 repartido entre 2 tablas), pero a escala de demo no hay riesgo real de exceder eso.
 - Se actualizó CLAUDE.md (sección Arquitectura objetivo, punto 7) para reflejar este cambio sobre la directiva original.
 
-**Cómo defenderlo en la entrevista:** "Evalué single-table design, que es lo que Amazon suele recomendar como patrón por defecto en DynamoDB, pero en este dominio una transferencia es una relación de dos cuentas, no el historial de una sola — forzar single-table hubiera significado duplicar cada movimiento o resolverlo con un GSI extra. Con solo dos entidades y patrones de acceso distintos, tablas separadas es la elección que evita complejidad sin pagar costo real en dólares, dado que el free tier de capacidad se reparte por cuenta de AWS, no por tabla."
+**Argumento central:** "Evalué single-table design, que es lo que Amazon suele recomendar como patrón por defecto en DynamoDB, pero en este dominio una transferencia es una relación de dos cuentas, no el historial de una sola — forzar single-table hubiera significado duplicar cada movimiento o resolverlo con un GSI extra. Con solo dos entidades y patrones de acceso distintos, tablas separadas es la elección que evita complejidad sin pagar costo real en dólares, dado que el free tier de capacidad se reparte por cuenta de AWS, no por tabla."
 
 ---
 
@@ -166,7 +166,7 @@ Idempotencia obligatoria (clave = `transferId`) en cada paso, porque SQS es at-l
 - Si en el futuro se necesitara filtrado de eventos por contenido (algo que EventBridge ofrece nativo con event patterns y SNS no), habría que reevaluar — no es un requisito actual del proyecto.
 - Se actualizó CLAUDE.md (sección Arquitectura objetivo, punto 4) para reflejar este cambio sobre la directiva original.
 
-**Cómo defenderlo en la entrevista:** "Empecé con EventBridge porque es el servicio 'de catálogo' para pub/sub en AWS, pero antes de crearlo verifiqué su modelo de costo real: los eventos custom no tienen ningún tramo gratuito, se cobran desde el primer evento. Como el proyecto tiene una regla explícita de costo cero garantizado por contrato (no solo barato en la práctica), reemplacé EventBridge por SNS — mismo patrón de desacople productor/consumidor, mismo potencial de fan-out a futuro, pero con free tier permanente real. Es la misma disciplina que ya había aplicado antes con DynamoDB (ADR-007): preferir la garantía contractual de AWS sobre 'total no debería costar casi nada'."
+**Argumento central:** "Empecé con EventBridge porque es el servicio 'de catálogo' para pub/sub en AWS, pero antes de crearlo verifiqué su modelo de costo real: los eventos custom no tienen ningún tramo gratuito, se cobran desde el primer evento. Como el proyecto tiene una regla explícita de costo cero garantizado por contrato (no solo barato en la práctica), reemplacé EventBridge por SNS — mismo patrón de desacople productor/consumidor, mismo potencial de fan-out a futuro, pero con free tier permanente real. Es la misma disciplina que ya había aplicado antes con DynamoDB (ADR-007): preferir la garantía contractual de AWS sobre 'total no debería costar casi nada'."
 
 ---
 
@@ -187,7 +187,7 @@ Idempotencia obligatoria (clave = `transferId`) en cada paso, porque SQS es at-l
 - Frecuencia de polling a definir en Día 4 (ej. cada 3-5 segundos) — suficiente para una demo de "tiempo real" sin generar volumen real de costo.
 - Si en algún futuro el proyecto necesitara latencia sub-segundo real (no es el caso de una demo), habría que reevaluar.
 
-**Cómo defenderlo en la entrevista:** "Evalué WebSockets y AppSync para el tiempo real del backoffice, pero ninguno de los dos es always-free — ambos tienen tramo de 12 meses, y mi cuenta ni siquiera calificaba para el legacy. Polling simple sobre el HTTP API que ya tenía desplegado no suma ninguna categoría de costo nueva, solo reutiliza una excepción de costo que ya había aceptado y documentado (ADR-005) para el propio endpoint de transferencias. Para 3 usuarios demo, la latencia de polling cada pocos segundos es imperceptible — no hay necesidad real de push."
+**Argumento central:** "Evalué WebSockets y AppSync para el tiempo real del backoffice, pero ninguno de los dos es always-free — ambos tienen tramo de 12 meses, y mi cuenta ni siquiera calificaba para el legacy. Polling simple sobre el HTTP API que ya tenía desplegado no suma ninguna categoría de costo nueva, solo reutiliza una excepción de costo que ya había aceptado y documentado (ADR-005) para el propio endpoint de transferencias. Para 3 usuarios demo, la latencia de polling cada pocos segundos es imperceptible — no hay necesidad real de push."
 
 ---
 
@@ -209,7 +209,7 @@ Idempotencia obligatoria (clave = `transferId`) en cada paso, porque SQS es at-l
 - Streams entrega **at-least-once**: la Lambda de PDF necesita su propia idempotencia. Se resolvió igual que en CORE-4/WORKER-1: la protección real es un `ConditionExpression: attribute_not_exists(receiptKey)` en el `UpdateItem` final — una reentrega que regenera y resube el mismo PDF a S3 es aceptable (mismo key, sobrescribe), solo la escritura en DynamoDB está protegida contra duplicarse.
 - Streams también entrega la fila de marca de idempotencia (mismo mecanismo de CORE-4) como su propio evento `INSERT` — la Lambda de PDF filtra por `timestamp` real (no `#IDEMPOTENCY_KEY`) antes de procesar.
 
-**Cómo defenderlo en la entrevista:** "Elegí que la generación del PDF fuera un consumidor pasivo de un stream de cambios, no una llamada directa del Worker, específicamente para que un fallo ahí nunca pueda tocar el resultado de la transferencia real. Verifiqué el costo de DynamoDB Streams antes de usarlo — es always-free cuando el consumidor es Lambda, a diferencia de otras alternativas de streaming que evalué en otras partes del proyecto (como EventBridge) que sí cobran desde el primer evento."
+**Argumento central:** "Elegí que la generación del PDF fuera un consumidor pasivo de un stream de cambios, no una llamada directa del Worker, específicamente para que un fallo ahí nunca pueda tocar el resultado de la transferencia real. Verifiqué el costo de DynamoDB Streams antes de usarlo — es always-free cuando el consumidor es Lambda, a diferencia de otras alternativas de streaming que evalué en otras partes del proyecto (como EventBridge) que sí cobran desde el primer evento."
 
 ---
 
@@ -230,7 +230,7 @@ Se verificó el estado real de la cuenta usada en este proyecto: creada en 2026 
 - Costo real mientras tanto: a volumen de demo (unas pocas decenas de transferencias, unos KB por PDF) el total nunca supera unos pocos MB — facturado a precio de S3 Standard ($0.023/GB/mes) serían centavos, pero la fecha límite es lo que evita que esto se vuelva "gratis para siempre" por descuido.
 - Queda anotado en TICKETS.md como recordatorio para no perderlo de vista entre sesiones.
 
-**Cómo defenderlo en la entrevista:** "Guardo el comprobante en S3 en vez de regenerarlo cada vez porque quería demostrar el patrón de bucket privado + presigned URL de expiración corta, que es exactamente cómo se resuelven documentos sensibles en la banca real. Pero como S3 no tiene capa always-free como el resto de mi stack, lo dejé explícitamente declarado con fecha de revisión en vez de asumir que era gratis para siempre sin chequearlo — la misma disciplina de costo que apliqué en cada decisión del proyecto."
+**Argumento central:** "Guardo el comprobante en S3 en vez de regenerarlo cada vez porque quería demostrar el patrón de bucket privado + presigned URL de expiración corta, que es exactamente cómo se resuelven documentos sensibles en la banca real. Pero como S3 no tiene capa always-free como el resto de mi stack, lo dejé explícitamente declarado con fecha de revisión en vez de asumir que era gratis para siempre sin chequearlo — la misma disciplina de costo que apliqué en cada decisión del proyecto."
 
 ---
 
@@ -250,7 +250,7 @@ Se verificó el estado real de la cuenta usada en este proyecto: creada en 2026 
 
 **Alternativas consideradas:** ninguna real — X-Ray es la opción nativa de AWS sin costo comparable; un colector propio de OpenTelemetry implicaría correr infraestructura adicional, fuera del alcance y la regla de $0 de este proyecto.
 
-**Cómo defenderlo en la entrevista:** "Activé X-Ray en las 5 Lambdas para poder seguir una transferencia de punta a punta por trace ID, no solo por logs sueltos. Descubrí en el camino que HTTP API v2 no da tracing de borde como sí lo hace REST API v1 — decisión consciente de no migrar solo por eso, porque HTTP API ya estaba elegido por motivos de costo y JWT authorizer nativo que pesan más."
+**Argumento central:** "Activé X-Ray en las 5 Lambdas para poder seguir una transferencia de punta a punta por trace ID, no solo por logs sueltos. Descubrí en el camino que HTTP API v2 no da tracing de borde como sí lo hace REST API v1 — decisión consciente de no migrar solo por eso, porque HTTP API ya estaba elegido por motivos de costo y JWT authorizer nativo que pesan más."
 
 ---
 
@@ -268,7 +268,7 @@ Se verificó el estado real de la cuenta usada en este proyecto: creada en 2026 
 
 **Alternativas consideradas:** subir el límite del budget existente en vez de crear uno nuevo — descartada: el deny automático a $1 es un guardarail correcto tal como está (agresivo a propósito), lo que faltaba era una alerta previa, no cambiar ese límite.
 
-**Cómo defenderlo en la entrevista:** "Ya había un budget con acción automática de deny al superar $1 — lo dejé intacto porque es el guardarail duro correcto. Le sumé uno de solo notificación con un umbral más alto y una alerta de gasto proyectado, para tener aviso previo en vez de enterarme cuando el acceso ya se cortó."
+**Argumento central:** "Ya había un budget con acción automática de deny al superar $1 — lo dejé intacto porque es el guardarail duro correcto. Le sumé uno de solo notificación con un umbral más alto y una alerta de gasto proyectado, para tener aviso previo en vez de enterarme cuando el acceso ya se cortó."
 
 ---
 
@@ -288,7 +288,7 @@ Se verificó el estado real de la cuenta usada en este proyecto: creada en 2026 
 
 **Consecuencias:** cierra el gap que la sección "Producción real" de este documento marcaba explícitamente como faltante.
 
-**Cómo defenderlo en la entrevista:** "El ledger append-only audita transferencias; CloudTrail audita la cuenta de AWS en sí — quién cambió una IAM policy, quién creó un recurso. Son dos capas de auditoría distintas y ambas hacen falta en un sistema bancario real. Lo dejé acotado a management events porque Data Events e Insights cobran desde el primer evento, y acá el objetivo era demostrar el patrón sin salirme de la regla de $0."
+**Argumento central:** "El ledger append-only audita transferencias; CloudTrail audita la cuenta de AWS en sí — quién cambió una IAM policy, quién creó un recurso. Son dos capas de auditoría distintas y ambas hacen falta en un sistema bancario real. Lo dejé acotado a management events porque Data Events e Insights cobran desde el primer evento, y acá el objetivo era demostrar el patrón sin salirme de la regla de $0."
 
 ---
 
@@ -310,7 +310,7 @@ Se verificó el estado real de la cuenta usada en este proyecto: creada en 2026 
 
 **Consecuencias:** el repo nuevo (`transfer-module-infra`) documenta la infra real en código, pero **no es todavía la fuente de verdad** — los recursos existen sin CloudFormation. El camino para que lo sea (`CloudFormation import`) queda documentado en el README de ese repo mismo, sin ejecutar — es una operación real sobre recursos con datos en uso, necesita aprobación humana explícita y puntual, no algo para correr en automático.
 
-**Cómo defenderlo en la entrevista:** "Escribí el SAM template al final, desde el estado real verificado de la cuenta, no antes — no tiene sentido templar algo mientras todavía estás decidiendo la arquitectura. Elegí un solo template porque nested stacks son una herramienta para coordinar despliegues de varios equipos, no algo que sume valor en un proyecto de una persona; y declaré el API Gateway crudo, sin el shorthand de SAM, específicamente porque necesitaba throttle distinto por ruta y el shorthand no lo expone. Y dejé el `CloudFormation import` documentado pero sin correr: automatizar una migración sobre recursos con datos reales en uso es exactamente el tipo de acción que no debería ejecutar solo un agente sin luz verde puntual."
+**Argumento central:** "Escribí el SAM template al final, desde el estado real verificado de la cuenta, no antes — no tiene sentido templar algo mientras todavía estás decidiendo la arquitectura. Elegí un solo template porque nested stacks son una herramienta para coordinar despliegues de varios equipos, no algo que sume valor en un proyecto de una persona; y declaré el API Gateway crudo, sin el shorthand de SAM, específicamente porque necesitaba throttle distinto por ruta y el shorthand no lo expone. Y dejé el `CloudFormation import` documentado pero sin correr: automatizar una migración sobre recursos con datos reales en uso es exactamente el tipo de acción que no debería ejecutar solo un agente sin luz verde puntual."
 
 ---
 
