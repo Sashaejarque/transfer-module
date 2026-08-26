@@ -1,0 +1,9 @@
+# Cada uno de estos ya es su propio repo (ver ADR-001, polyrepo) -- no se versionan acá.
+contracts/
+core-api/
+frontend/
+mock-coelsa/
+pdf-receipt/
+worker/
+infra/
+.DS_Store
