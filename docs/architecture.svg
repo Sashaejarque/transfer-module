@@ -1,107 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 900" font-family="ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" font-family="ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace">
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#8ca2bd"></path>
     </marker>
-    <marker id="arrPrimary" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#b7f36b"></path>
-    </marker>
   </defs>
 
-  <rect x="0" y="0" width="720" height="900" fill="#07111f"></rect>
+  <rect x="0" y="0" width="900" height="500" fill="#07111f"></rect>
 
-  <!-- Frontend -->
-  <rect x="210" y="20" width="300" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="360" y="45" text-anchor="middle" fill="#eef5ff" font-size="14">Frontend</text>
-  <text x="360" y="63" text-anchor="middle" fill="#8ca2bd" font-size="10.5">Next.js, Vercel</text>
+  <!-- Row 1: Frontend, API Gateway, Core API, SNS -->
+  <rect x="32.5" y="20" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="127.5" y="60" text-anchor="middle" fill="#eef5ff" font-size="13">Frontend</text>
 
-  <line x1="360" y1="76" x2="360" y2="122" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
-  <text x="372" y="103" fill="#8ca2bd" font-size="10.5">JWT de Cognito</text>
+  <rect x="247.5" y="20" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="342.5" y="60" text-anchor="middle" fill="#eef5ff" font-size="13">API Gateway</text>
 
-  <!-- API Gateway -->
-  <rect x="180" y="126" width="360" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="360" y="151" text-anchor="middle" fill="#eef5ff" font-size="14">API Gateway</text>
-  <text x="360" y="169" text-anchor="middle" fill="#8ca2bd" font-size="10.5">HTTP API, JWT authorizer nativo</text>
+  <rect x="462.5" y="20" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="557.5" y="60" text-anchor="middle" fill="#eef5ff" font-size="13">Core API</text>
 
-  <!-- side branch: read routes -->
-  <path d="M 540 154 L 610 154 L 610 220" fill="none" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></path>
-  <text x="616" y="200" fill="#8ca2bd" font-size="9.5">GET /accounts</text>
-  <text x="616" y="212" fill="#8ca2bd" font-size="9.5">/ledger, /receipt</text>
-  <rect x="500" y="224" width="200" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="600" y="248" text-anchor="middle" fill="#eef5ff" font-size="12">Core API read</text>
-  <text x="600" y="264" text-anchor="middle" fill="#8ca2bd" font-size="9.5">Lambda</text>
+  <rect x="677.5" y="20" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="772.5" y="60" text-anchor="middle" fill="#eef5ff" font-size="13">SNS</text>
 
-  <line x1="300" y1="182" x2="300" y2="222" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
-  <text x="8" y="205" fill="#8ca2bd" font-size="10.5">POST /transferencias</text>
+  <line x1="222.5" y1="55" x2="243.5" y2="55" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <line x1="437.5" y1="55" x2="458.5" y2="55" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <line x1="652.5" y1="55" x2="673.5" y2="55" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
 
-  <!-- Core API write -->
-  <rect x="150" y="226" width="300" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="300" y="251" text-anchor="middle" fill="#eef5ff" font-size="14">Core API</text>
-  <text x="300" y="269" text-anchor="middle" fill="#8ca2bd" font-size="10.5">Lambda</text>
+  <!-- Row 2: SQS, Worker, Mock COELSA -->
+  <rect x="140" y="170" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="235" y="210" text-anchor="middle" fill="#eef5ff" font-size="13">SQS</text>
 
-  <line x1="300" y1="282" x2="300" y2="322" stroke="#b7f36b" stroke-width="1.75" marker-end="url(#arrPrimary)"></line>
+  <rect x="355" y="170" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="450" y="210" text-anchor="middle" fill="#eef5ff" font-size="13">Worker</text>
 
-  <!-- DynamoDB critical write -->
-  <rect x="120" y="326" width="360" height="64" rx="10" fill="#12243a" stroke="#b7f36b" stroke-width="1.75"></rect>
-  <text x="300" y="352" text-anchor="middle" fill="#eef5ff" font-size="13">DynamoDB — débito atómico</text>
-  <text x="300" y="370" text-anchor="middle" fill="#8ca2bd" font-size="10.5">INSERT ledger · DEBITADO</text>
+  <rect x="570" y="170" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="665" y="205" text-anchor="middle" fill="#eef5ff" font-size="13">Mock COELSA</text>
+  <text x="665" y="222" text-anchor="middle" fill="#8ca2bd" font-size="9.5">1.5s · ~15% de fallas</text>
 
-  <path d="M 300 390 L 300 410 L 125 410 L 125 428" fill="none" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></path>
+  <line x1="330" y1="205" x2="351" y2="205" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <line x1="545" y1="205" x2="566" y2="205" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
 
-  <!-- SNS / SQS / Worker row -->
-  <rect x="30" y="432" width="190" height="50" rx="9" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="125" y="462" text-anchor="middle" fill="#eef5ff" font-size="12.5">SNS</text>
+  <!-- connectors between row1 and row2 -->
+  <path d="M 772.5 90 L 772.5 130 L 235 130 L 235 166" fill="none" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></path>
 
-  <line x1="220" y1="457" x2="248" y2="457" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <!-- Ledger -->
+  <rect x="310" y="270" width="280" height="100" rx="14" fill="#12243a" stroke="#b7f36b" stroke-width="1.75"></rect>
+  <text x="450" y="296" text-anchor="middle" fill="#eef5ff" font-size="14" font-weight="600">DynamoDB Ledger</text>
+  <text x="450" y="322" text-anchor="middle" fill="#8ca2bd" font-size="11">✓ Liquida ~85% · ✗ Revierte ~15%</text>
+  <text x="450" y="342" text-anchor="middle" fill="#8ca2bd" font-size="10">append-only · sin UPDATE</text>
 
-  <rect x="252" y="432" width="190" height="50" rx="9" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="347" y="462" text-anchor="middle" fill="#eef5ff" font-size="12.5">SQS</text>
+  <path d="M 665 240 L 665 255 L 450 255 L 450 266" fill="none" stroke="#b7f36b" stroke-width="1.75" marker-end="url(#arr)"></path>
 
-  <line x1="442" y1="457" x2="470" y2="457" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <!-- Row 3: Streams, PDF, S3 -->
+  <rect x="140" y="410" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="235" y="445" text-anchor="middle" fill="#eef5ff" font-size="12.5">DynamoDB Streams</text>
+  <text x="235" y="462" text-anchor="middle" fill="#8ca2bd" font-size="9.5">event source</text>
 
-  <rect x="474" y="432" width="190" height="50" rx="9" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="569" y="454" text-anchor="middle" fill="#eef5ff" font-size="12.5">Worker</text>
-  <text x="569" y="470" text-anchor="middle" fill="#8ca2bd" font-size="9.5">Lambda</text>
+  <rect x="355" y="410" width="190" height="70" rx="14" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
+  <text x="450" y="450" text-anchor="middle" fill="#eef5ff" font-size="13">PDF (Lambda)</text>
 
-  <path d="M 569 482 L 569 504 L 300 504 L 300 522" fill="none" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></path>
+  <rect x="570" y="410" width="190" height="70" rx="14" fill="#12243a" stroke="#b7f36b" stroke-width="1.75"></rect>
+  <text x="665" y="450" text-anchor="middle" fill="#eef5ff" font-size="13">S3 (privado)</text>
 
-  <!-- Mock COELSA -->
-  <rect x="150" y="526" width="300" height="64" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="300" y="552" text-anchor="middle" fill="#eef5ff" font-size="14">Mock COELSA</text>
-  <text x="300" y="570" text-anchor="middle" fill="#8ca2bd" font-size="10.5">Lambda · 1.5s · ~15% de fallas a propósito</text>
+  <line x1="330" y1="445" x2="351" y2="445" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
+  <line x1="545" y1="445" x2="566" y2="445" stroke="#b7f36b" stroke-width="1.75" marker-end="url(#arr)"></line>
 
-  <!-- branch -->
-  <line x1="240" y1="590" x2="150" y2="638" stroke="#8ce6b0" stroke-width="1.75" marker-end="url(#arr)"></line>
-  <line x1="360" y1="590" x2="450" y2="638" stroke="#ff7e8b" stroke-width="1.75" marker-end="url(#arr)"></line>
-
-  <rect x="20" y="642" width="260" height="58" rx="10" fill="#12243a" stroke="#8ce6b0" stroke-width="1.5"></rect>
-  <text x="150" y="666" text-anchor="middle" fill="#eef5ff" font-size="12.5">LIQUIDADO</text>
-  <text x="150" y="683" text-anchor="middle" fill="#8ca2bd" font-size="10">crédito atómico</text>
-
-  <rect x="410" y="642" width="260" height="58" rx="10" fill="#12243a" stroke="#ff7e8b" stroke-width="1.5"></rect>
-  <text x="540" y="666" text-anchor="middle" fill="#eef5ff" font-size="12.5">REVERTIDO</text>
-  <text x="540" y="683" text-anchor="middle" fill="#8ca2bd" font-size="10">crédito devuelto</text>
-
-  <line x1="150" y1="700" x2="150" y2="740" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
-  <text x="158" y="726" fill="#8ca2bd" font-size="9.5">si liquida</text>
-
-  <!-- Streams / PDF / S3 row -->
-  <rect x="30" y="744" width="200" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="130" y="766" text-anchor="middle" fill="#eef5ff" font-size="11.5">DynamoDB Streams</text>
-  <text x="130" y="782" text-anchor="middle" fill="#8ca2bd" font-size="9.5">event source</text>
-
-  <line x1="230" y1="772" x2="256" y2="772" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></line>
-
-  <rect x="260" y="744" width="180" height="56" rx="10" fill="#0d1a2c" stroke="#203650" stroke-width="1.5"></rect>
-  <text x="350" y="766" text-anchor="middle" fill="#eef5ff" font-size="12">PDF Lambda</text>
-  <text x="350" y="782" text-anchor="middle" fill="#8ca2bd" font-size="9.5">pdfkit</text>
-
-  <line x1="440" y1="772" x2="466" y2="772" stroke="#b7f36b" stroke-width="1.75" marker-end="url(#arrPrimary)"></line>
-
-  <rect x="470" y="744" width="220" height="56" rx="10" fill="#12243a" stroke="#b7f36b" stroke-width="1.75"></rect>
-  <text x="580" y="766" text-anchor="middle" fill="#eef5ff" font-size="12">S3 privado</text>
-  <text x="580" y="782" text-anchor="middle" fill="#8ca2bd" font-size="9.5">presigned URL, 5 min</text>
-
-  <text x="360" y="850" text-anchor="middle" fill="#8ca2bd" font-size="10.5">Cada salto es real — la página /dashboard/arquitectura dispara este</text>
-  <text x="360" y="866" text-anchor="middle" fill="#8ca2bd" font-size="10.5">mismo camino con una transferencia real, observado por polling.</text>
+  <path d="M 310 320 L 235 320 L 235 406" fill="none" stroke="#8ca2bd" stroke-width="1.5" marker-end="url(#arr)"></path>
 </svg>
